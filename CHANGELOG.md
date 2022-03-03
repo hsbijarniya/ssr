@@ -1,3 +1,8 @@
+## 0.0.2
+
+* Basic working implemented
+* Example added
+
 ## 0.0.1
 
-* TODO: Describe initial release.
+* Initial release.
