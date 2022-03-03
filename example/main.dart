@@ -48,7 +48,8 @@ class MyHomePage extends StatelessWidget {
                     'Column': {
                       'children': [
                         {
-                          'Text': ["Text #1."],
+                          'Text':
+                              "Text #1.", // optional bracket for single positional argument
                         },
                         {
                           'Text': ["Text #2."],

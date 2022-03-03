@@ -1,11 +1,11 @@
 name: ssr
-description: Generate Flutter Widgets from server generated json
-version: 0.0.4
+description: Generate Flutter Widgets from server generated json code without any dependency.
+version: 0.0.7
 homepage: https://ensorta.com
 repository: https://github.com/hsbijarniya/ssr
 
 environment:
-  sdk: ">=2.16.1 <3.0.0"
+  sdk: ">=2.15.1 <3.0.0"
   flutter: ">=1.17.0"
 
 dependencies:

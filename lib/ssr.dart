@@ -4,15 +4,47 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 class ServerSideRendering {
-  static isRegistered(String key) {
-    return _registery.containsKey(key);
+  // check whether widget registered or not
+  static bool isRegistered(String path) {
+    List<String> levels = path.split('.');
+    dynamic root = _registery;
+
+    for (String level in levels) {
+      if (!root.containsKey(level)) {
+        return false;
+      }
+
+      root = root[level];
+    }
+
+    return true;
   }
 
-  static register(String key, dynamic value) {
-    _registery[key] = value;
+  // register new widget or value
+  static register(String path, dynamic value) {
+    _registery[path] = value;
   }
 
-  static Map forEach(Map tree) {
+  // obtain registered value at given dot seprated path
+  static getRegistery(String path) {
+    List<String> levels = path.split('.');
+    dynamic root = _registery;
+
+    // print(levels);
+
+    for (String level in levels) {
+      if (!root.containsKey(level)) {
+        throw Exception('$level not registered in registery.');
+      }
+
+      root = root[level];
+    }
+
+    return root;
+  }
+
+  // process named arguments
+  static Map processNamedArguments(Map tree) {
     Map<String, dynamic> processedTree = {};
 
     for (var key in tree.keys) {
@@ -28,8 +60,8 @@ class ServerSideRendering {
         }
       } else if (value is Map) {
         processedTree[key] = ServerSideRendering.process(value);
-      } else if (value is String && _registery.containsKey(value)) {
-        processedTree[key] = _registery[value];
+      } else if (value is String && ServerSideRendering.isRegistered(value)) {
+        processedTree[key] = ServerSideRendering.getRegistery(value);
       } else {
         processedTree[key] = value;
       }
@@ -44,17 +76,19 @@ class ServerSideRendering {
     // print('process');
 
     // registered item
-    if (tree.keys.length == 1 && _registery.containsKey(tree.keys.first)) {
-      String name = tree.keys.first;
+    if (tree.keys.length == 1 &&
+        ServerSideRendering.isRegistered(tree.keys.first)) {
+      var name = tree.keys.first;
       var child = tree[name];
 
       // print('registeryItem');
       // print(name);
       // print(child);
 
-      List<dynamic> positionalArguments =
-          (child is List ? child.takeWhile((value) => value is! Map) : [])
-              .toList();
+      List<dynamic> positionalArguments = (child is List
+              ? child.takeWhile((value) => value is! Map)
+              : (child is! Map ? [child] : []))
+          .toList();
 
       // print('positionalArguments');
       // print(positionalArguments);
@@ -73,23 +107,26 @@ class ServerSideRendering {
       // print(namedArguments);
 
       // print('outside loop');
-      var processedTree = ServerSideRendering.forEach(namedArguments);
+      var processedTree =
+          ServerSideRendering.processNamedArguments(namedArguments);
 
       // });
 
       if (processedTree.isEmpty) {
-        return Function.apply(_registery[name]!, positionalArguments);
+        return Function.apply(
+            ServerSideRendering.getRegistery(name)!, positionalArguments);
       } else {
-        return Function.apply(_registery[name]!, positionalArguments,
-            {const Symbol('args'): processedTree});
+        return Function.apply(ServerSideRendering.getRegistery(name)!,
+            positionalArguments, {const Symbol('args'): processedTree});
       }
     }
 
-    var processedTree = ServerSideRendering.forEach(tree);
+    var processedTree = ServerSideRendering.processNamedArguments(tree);
 
     return processedTree;
   }
 
+  // create Widget from json
   static Widget build(Map tree, {BuildContext? context}) {
     return ServerSideRendering.process(tree);
   }
@@ -109,10 +146,8 @@ Map<String, dynamic> _registery = {
         shape: args['shape'],
         backgroundColor: args['backgroundColor'],
         foregroundColor: args['foregroundColor'],
-        brightness: args['brightness'],
         iconTheme: args['iconTheme'],
         actionsIconTheme: args['actionsIconTheme'],
-        textTheme: args['textTheme'],
         primary: args['primary'] ?? true,
         centerTitle: args['centerTitle'],
         excludeHeaderSemantics: args['excludeHeaderSemantics'] ?? true,
@@ -121,12 +156,21 @@ Map<String, dynamic> _registery = {
         bottomOpacity: args['bottomOpacity'] ?? 1.0,
         toolbarHeight: args['toolbarHeight'],
         leadingWidth: args['leadingWidth'],
-        backwardsCompatibility: args['backwardsCompatibility'],
         toolbarTextStyle: args['toolbarTextStyle'],
         titleTextStyle: args['titleTextStyle'],
         systemOverlayStyle: args['systemOverlayStyle'],
       ),
-  'Alignment.center': Alignment.center,
+  'Alignment': {
+    'bottomCenter': Alignment.bottomCenter,
+    'bottomLeft': Alignment.bottomLeft,
+    'bottomRight': Alignment.bottomRight,
+    'center': Alignment.center,
+    'centerLeft': Alignment.centerLeft,
+    'centerRight': Alignment.centerRight,
+    'topCenter': Alignment.topCenter,
+    'topLeft': Alignment.topLeft,
+    'topRight': Alignment.topRight,
+  },
   'Color': (int value) => Color(value),
   'Column': ({Map args = const {}}) => Column(
         key: args['key'],
@@ -211,7 +255,12 @@ Map<String, dynamic> _registery = {
         textWidthBasis: args['textWidthBasis'],
         textHeightBehavior: args['textHeightBehavior'],
       ),
-  'TextOverflow.ellipsis': TextOverflow.ellipsis,
+  'TextOverflow': {
+    'ellipsis': TextOverflow.ellipsis,
+    'clip': TextOverflow.clip,
+    'fade': TextOverflow.fade,
+    'visible': TextOverflow.visible,
+  },
   'TextStyle': ({Map args = const {}}) => TextStyle(
         inherit: args['inherit'] ?? true,
         color: args['color'],

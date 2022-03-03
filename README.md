@@ -56,6 +56,18 @@ This is a RaisedButton widget parser.
 import 'package:ssr/ssr.dart';
 import 'package:flutter/material.dart';
 
+ServerSideRendering.register('Alignment', {
+  'bottomCenter': Alignment.bottomCenter,
+  'bottomLeft': Alignment.bottomLeft,
+  'bottomRight': Alignment.bottomRight,
+  'center': Alignment.center,
+  'centerLeft': Alignment.centerLeft,
+  'centerRight': Alignment.centerRight,
+  'topCenter': Alignment.topCenter,
+  'topLeft': Alignment.topLeft,
+  'topRight': Alignment.topRight,
+});
+
 ServerSideRendering.register('RaisedButton', ({Map args = const {}}) {
     return RaisedButton(
       color: args['color'],
@@ -82,10 +94,10 @@ var raisedButton_json = {
         'child': {
             'RaisedButton' : {
                 'color': {
-                    Color: [0xFF00FF],
+                    'Color': [0xFF00FF],
                 },
                 'textColor': {
-                    Color: [0x00FF00],
+                    'Color': [0x00FF00],
                 },
                 'splashColor' : {
                     'Color': [0x00FF00],
@@ -103,6 +115,7 @@ var raisedButton_json = {
 
 ## Widget Documents
 Already completed widget/registery:
+* Alignment
 * AppBar
 * Color
 * Column
@@ -110,4 +123,5 @@ Already completed widget/registery:
 * Row
 * Scaffold
 * Text
+* TextOverflow
 * TextStyle
