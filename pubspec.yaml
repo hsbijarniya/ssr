@@ -1,6 +1,6 @@
 name: ssr
 description: Generate Flutter Widgets from server generated json
-version: 0.0.2
+version: 0.0.3
 homepage: https://ensorta.com
 repository: https://github.com/hsbijarniya/ssr
 

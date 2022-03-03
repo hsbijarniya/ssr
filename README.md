@@ -43,24 +43,8 @@ class PreviewPage extends StatelessWidget {
       appBar: AppBar(
         title: Text("Preview"),
       ),
-      body: FutureBuilder<Widget>(
-        future: _buildWidget(context),
-        builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
-          if (snapshot.hasError) {
-            print(snapshot.error);
-          }
-          return snapshot.hasData
-              ? SizedBox.expand(
-                  child: snapshot.data,
-                )
-              : Text("Loading...");
-        },
-      ),
+      body: ServerSideRendering.build(jsonString, context),
     );
-  }
-
-  Future<Widget> _buildWidget(BuildContext context) async {
-    return ServerSideRendering.build(jsonString, context);
   }
 }
 ```

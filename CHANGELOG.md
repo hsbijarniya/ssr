@@ -1,3 +1,7 @@
+## 0.0.3
+
+* Example updated
+
 ## 0.0.2
 
 * Basic working implemented
