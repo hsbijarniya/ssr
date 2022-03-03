@@ -1,3 +1,7 @@
+## 0.0.4
+
+* Example updated
+
 ## 0.0.3
 
 * Example updated

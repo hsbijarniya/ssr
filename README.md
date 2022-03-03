@@ -33,9 +33,9 @@ You should use `ServerSideRendering.build` method to covert a json string into f
 import 'package:ssr/ssr.dart';
 
 class PreviewPage extends StatelessWidget {
-  final String jsonString;
+  final Map jsonMap;
 
-  PreviewPage(this.jsonString);
+  PreviewPage(this.jsonMap);
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +43,7 @@ class PreviewPage extends StatelessWidget {
       appBar: AppBar(
         title: Text("Preview"),
       ),
-      body: ServerSideRendering.build(jsonString, context),
+      body: ServerSideRendering.build(jsonMap, context),
     );
   }
 }
@@ -76,9 +76,7 @@ ServerSideRendering.register('RaisedButton', ({Map args = const {}}) {
 ## How to add a click listener
 Add "click_event" property to your widget json definition. for example:
 ```dart
-var raisedButton_json =
-'''
-{
+var raisedButton_json = {
     'Container': {
         'alignment': 'Alignment.center',
         'child': {
@@ -99,7 +97,7 @@ var raisedButton_json =
             }
         }
     }
-}
+};
 ```
   
 
