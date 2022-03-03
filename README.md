@@ -1,4 +1,4 @@
-# Flutter SSR (Alpha Stage)
+# Server Side Rendering
 >A Backend-Driven UI toolkit, build your dynamic UI with json, and the json format is very similar with flutter widget code.
   
   
